@@ -740,7 +740,8 @@ body {
    UPDATE TOAST
 ══════════════════════════════════════ */
 #update-toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
+  pointer-events: none;
   background: var(--mx-green); color: #fff;
   border-radius: 14px; padding: 12px 18px;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -750,7 +751,7 @@ body {
   width: calc(100% - 32px); max-width: 420px; box-sizing: border-box;
   justify-content: center;
 }
-#update-toast.show { transform: translateX(-50%) translateY(0); }
+#update-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
 #update-toast #update-msg { flex: 1 1 100%; text-align: center; min-width: 0; }
 #update-toast button {
   background: rgba(255,255,255,0.25); border: none; border-radius: 8px;
