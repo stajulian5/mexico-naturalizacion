@@ -73,6 +73,30 @@ body {
   border: 2px solid var(--card-border);
   color: var(--text);
 }
+.install-btn {
+  display: none; align-items: center; gap: 5px;
+  background: var(--mx-green); color: #fff; border: none;
+  border-radius: 20px; padding: 6px 12px; font-size: 0.78rem; font-weight: 900;
+  cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,104,71,0.35);
+}
+.install-btn.show { display: flex; }
+.install-btn:hover { filter: brightness(1.08); }
+
+#install-modal {
+  display: none; position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.45); align-items: center; justify-content: center; padding: 20px;
+}
+#install-modal.show { display: flex; }
+#install-modal .im-card {
+  background: #fff; border-radius: 18px; padding: 22px; max-width: 380px; width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+#install-modal h3 { margin: 0 0 10px; font-size: 1.05rem; }
+#install-modal ol { margin: 0 0 14px; padding-left: 20px; font-size: 0.88rem; line-height: 1.6; color: var(--text); }
+#install-modal button.im-close {
+  background: var(--mx-green); color: #fff; border: none; border-radius: 10px;
+  padding: 10px 16px; font-weight: 900; font-size: 0.85rem; cursor: pointer; width: 100%;
+}
 .stat-pill .val { color: var(--gold-dk); }
 .stat-pill.streak .val { color: #E8720C; }
 .stat-pill.hearts .val { color: var(--red); }
@@ -831,6 +855,15 @@ body {
   <button onclick="dismissUpdate()" style="background:rgba(255,255,255,0.1)">✕</button>
 </div>
 
+<!-- Install instructions modal -->
+<div id="install-modal" onclick="if(event.target===this) closeInstallModal()">
+  <div class="im-card">
+    <h3>📲 Instalar Mexico-Lingo</h3>
+    <ol id="install-steps"></ol>
+    <button class="im-close" onclick="closeInstallModal()">Entendido</button>
+  </div>
+</div>
+
 <canvas id="confetti-canvas"></canvas>
 
 <!-- ═══════════ HOME ═══════════ -->
@@ -842,6 +875,7 @@ body {
       <h1 style="font-size:0.88rem;line-height:1.2">para Karina Бубочка 🥰</h1>
     </div>
     <div style="flex:1"></div>
+    <button id="install-btn" class="install-btn" onclick="handleInstallClick()" title="Instalar Mexico-Lingo en tu dispositivo">📲 Instalar</button>
     <div class="stat-pills">
       <div class="stat-pill streak" title="Racha de días seguidos estudiando">🔥 <span class="val" id="h-streak">0</span></div>
       <div class="stat-pill" title="Puntos de experiencia (XP) ganados"><span style="color:var(--gold)">⚡</span> <span class="val" id="h-xp">0</span></div>
@@ -1365,6 +1399,92 @@ body {
 
   window.dismissUpdate = function() {
     document.getElementById('update-toast')?.classList.remove('show');
+  };
+})();
+
+// ── Install button (PWA) ──────────────────────────────
+(function() {
+  const btn = document.getElementById('install-btn');
+  let deferredPrompt = null;
+
+  // Already installed / running standalone? Hide button entirely.
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true; // iOS Safari
+  }
+
+  if (isStandalone()) return;
+
+  // Chrome/Edge/Android: real install prompt available
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    btn.classList.add('show');
+  });
+
+  window.addEventListener('appinstalled', () => {
+    btn.classList.remove('show');
+    deferredPrompt = null;
+  });
+
+  // Fallback: always show the button after a short delay so users on
+  // browsers that don't fire beforeinstallprompt (Safari, iOS, Firefox)
+  // still get manual instructions.
+  setTimeout(() => { if (!isStandalone()) btn.classList.add('show'); }, 1500);
+
+  window.handleInstallClick = async function() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') btn.classList.remove('show');
+      deferredPrompt = null;
+      return;
+    }
+    showInstallInstructions();
+  };
+
+  function showInstallInstructions() {
+    const ua = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/.test(ua);
+    const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|EdgiOS/.test(ua);
+    const isAndroid = /Android/.test(ua);
+    const isMac = /Macintosh/.test(ua);
+
+    let steps;
+    if (isIOS) {
+      steps = [
+        'Toca el botón <b>Compartir</b> (cuadrado con flecha hacia arriba) en la barra inferior de Safari.',
+        'Desplázate y elige <b>"Agregar a inicio"</b>.',
+        'Toca <b>"Agregar"</b> arriba a la derecha.'
+      ];
+    } else if (isAndroid) {
+      steps = [
+        'Toca el menú <b>⋮</b> (tres puntos) arriba a la derecha de Chrome.',
+        'Elige <b>"Instalar app"</b> o <b>"Agregar a pantalla de inicio"</b>.',
+        'Confirma tocando <b>"Instalar"</b>.'
+      ];
+    } else if (isSafari && isMac) {
+      steps = [
+        'Abre el menú <b>Archivo</b> en la barra de menú de Safari.',
+        'Elige <b>"Agregar al Dock..."</b>.',
+        'Confirma haciendo clic en <b>"Agregar"</b>.'
+      ];
+    } else {
+      // Chrome / Edge desktop fallback
+      steps = [
+        'Haz clic en el menú <b>⋮</b> (tres puntos) arriba a la derecha del navegador.',
+        'Busca <b>"Guardar y compartir"</b> o <b>"Aplicaciones"</b>.',
+        'Elige <b>"Instalar Mexico-Lingo..."</b> y confirma.'
+      ];
+    }
+
+    const list = document.getElementById('install-steps');
+    list.innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+    document.getElementById('install-modal').classList.add('show');
+  }
+
+  window.closeInstallModal = function() {
+    document.getElementById('install-modal').classList.remove('show');
   };
 })();
 </script>
