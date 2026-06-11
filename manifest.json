@@ -1,0 +1,21 @@
+{
+  "name": "Mexico-Lingo — Naturalización Mexicana",
+  "short_name": "Mexico-Lingo",
+  "description": "Estudia para tu examen de naturalización mexicana con Fridita 🌸",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#006847",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23006847'/><text y='.9em' font-size='80' text-anchor='middle' x='50'>🇲🇽</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "games"],
+  "screenshots": []
+}

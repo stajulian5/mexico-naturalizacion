@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇲🇽 Mexico-Lingo para Karina</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇲🇽</text></svg>">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#006847">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mexico-Lingo">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+/* ── Reset & Variables ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #58CC02; --green-dk: #45A800; --green-pale: #D7FFB8;
+  --red: #FF4B4B; --red-dk: #EA2B2B;
+  --gold: #FFC800; --gold-dk: #D4A700;
+  --blue: #1CB0F6; --blue-dk: #0099D9;
+  --purple: #9B59FF;
+  /* Light theme */
+  --bg: #F0F2F5;
+  --card: #FFFFFF;
+  --card2: #F7F9FB;
+  --card-border: #E2E8F0;
+  --text: #2D3748;
+  --text-muted: #718096;
+  --text-light: #A0AEC0;
+  --mx-green: #006847; --mx-red: #CE1126;
+  --radius: 16px; --radius-sm: 12px;
+  --shadow: 0 4px 0;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Screens ── */
+.screen { display: none; flex-direction: column; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════════ */
+#screen-home { background: var(--bg); }
+
+/* Top bar */
+.top-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  background: var(--card);
+  border-bottom: 2px solid var(--card-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.flag-emoji { font-size: 1.5rem; }
+.top-bar h1 { font-size: 0.95rem; font-weight: 900; flex: 1; color: var(--text); }
+.top-bar .sub { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+/* Stat pills */
+.stat-pills { display: flex; gap: 6px; }
+.stat-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--bg); border-radius: 20px;
+  padding: 5px 10px; font-size: 0.82rem; font-weight: 800;
+  border: 2px solid var(--card-border);
+  color: var(--text);
+}
+.stat-pill .val { color: var(--gold-dk); }
+.stat-pill.streak .val { color: #E8720C; }
+.stat-pill.hearts .val { color: var(--red); }
+
+/* Mascot strip — sits between header and Modos de Estudio */
+.mascot-area {
+  display: flex; flex-direction: row;
+  align-items: flex-end;
+  padding: 0 16px 0 0;
+  background: var(--card);
+  border-bottom: 2px solid var(--card-border);
+  overflow: hidden;
+  min-height: 120px;
+}
+.mascot-inner {
+  display: flex; flex-direction: row;
+  align-items: flex-end; gap: 8px;
+  padding-bottom: 8px;
+}
+/* Frida scene — sized so she fits within the 120px strip height */
+.mascot-frida-wrap {
+  width: 130px; flex-shrink: 0;
+  cursor: pointer; transition: transform 0.2s;
+  overflow: visible;
+}
+.mascot-frida-wrap:hover { transform: scale(1.05) rotate(-2deg); }
+.mascot-frida-wrap svg { width: 100%; height: auto; display: block; }
+
+/* Speech bubble — snug next to Frida */
+.mascot-bubble {
+  align-self: center;
+  width: 150px; flex-shrink: 0;
+  background: #fff; border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 0.78rem; font-weight: 700; line-height: 1.45;
+  border: 2px solid var(--card-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  color: var(--text); position: relative;
+}
+/* Tail points LEFT toward Frida */
+.mascot-bubble::before {
+  content: '';
+  position: absolute; left: -13px; top: 38%; transform: translateY(-50%);
+  border: 8px solid transparent; border-right-color: var(--card-border);
+  pointer-events: none;
+}
+.mascot-bubble::after {
+  content: '';
+  position: absolute; left: -10px; top: 38%; transform: translateY(-50%);
+  border: 7px solid transparent; border-right-color: #fff;
+  pointer-events: none;
+}
+/* small mascot for study/result screens (head only clone) */
+.mascot-svg-wrap { width: 72px; flex-shrink: 0; height: auto; cursor: pointer; transition: transform 0.2s; }
+.mascot-svg-wrap:hover { transform: scale(1.08) rotate(-3deg); }
+
+/* Mode grid */
+.home-content { padding: 6px 12px 86px; flex: 1; }
+.section-title {
+  font-size: 0.65rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-muted); margin: 10px 0 6px;
+}
+
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+.mode-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 11px; cursor: pointer;
+  border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  transition: all 0.15s; text-align: left;
+  display: flex; align-items: center; gap: 9px;
+}
+.mode-card:hover { background: var(--card2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.mode-card:active { transform: translateY(0); box-shadow: var(--shadow-card); }
+.mode-card.full { grid-column: span 2; }
+.mode-card .mc-icon { font-size: 1.25rem; flex-shrink: 0; }
+.mode-card .mc-body { flex: 1; min-width: 0; }
+.mode-card .mc-title { font-size: 0.8rem; font-weight: 900; color: var(--text); line-height: 1.2; }
+.mode-card .mc-count { font-size: 0.67rem; color: var(--text-muted); font-weight: 700; margin-top: 1px; }
+.mode-card.c-green { border-left: 4px solid var(--green); }
+.mode-card.c-red   { border-left: 4px solid var(--red); }
+.mode-card.c-gold  { border-left: 4px solid var(--gold-dk); }
+.mode-card.c-blue  { border-left: 4px solid var(--blue); }
+.mode-card.c-purple{ border-left: 4px solid var(--purple); }
+
+/* Category path — 3-col grid */
+.cat-path {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+}
+.cat-item {
+  background: var(--card); border-radius: 9px;
+  padding: 7px 9px; cursor: pointer;
+  border: 2px solid var(--card-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  display: flex; align-items: center; gap: 7px;
+  transition: all 0.15s;
+}
+.cat-item:hover { background: var(--card2); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.09); }
+.cat-item .ci-icon { font-size: 1rem; flex-shrink: 0; line-height: 1; }
+.cat-item .ci-info { flex: 1; min-width: 0; }
+.cat-item .ci-name { font-size: 0.72rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+.cat-item .ci-sub { display: none; }
+.cat-progress { width: 28px; text-align: right; flex-shrink: 0; }
+.cat-pct { font-size: 0.65rem; font-weight: 900; }
+.mini-bar { height: 3px; background: var(--bg); border-radius: 2px; margin-top: 2px; overflow: hidden; }
+.mini-bar-fill { height: 100%; border-radius: 2px; }
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; background: var(--card);
+  border-top: 2px solid var(--card-border);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1; padding: 10px 4px 8px; background: none; border: none;
+  color: var(--text-light); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 0.6rem; font-weight: 800; transition: color 0.15s;
+  letter-spacing: 0.01em;
+}
+.nav-btn .nb-icon { font-size: 1.3rem; line-height: 1; }
+.nav-btn.active { color: var(--mx-green); }
+.nav-btn.active .nb-icon { transform: scale(1.15); }
+
+/* (old placeholder rule removed — real #screen-camino is defined below) */
+.camino-coming {
+  background: var(--card); border-radius: var(--radius);
+  padding: 32px 28px; border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card); max-width: 320px; width: 100%;
+}
+.camino-coming .cc-icon { font-size: 3.5rem; margin-bottom: 12px; }
+.camino-coming h2 { font-size: 1.3rem; font-weight: 900; margin-bottom: 8px; color: var(--text); }
+.camino-coming p { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; line-height: 1.5; }
+.camino-unit-preview {
+  width: 100%; max-width: 320px;
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 8px;
+}
+.cup-row {
+  background: var(--card); border-radius: 10px;
+  border: 2px solid var(--card-border);
+  padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.cup-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.cup-label { font-size: 0.82rem; font-weight: 800; flex: 1; }
+.cup-badge {
+  font-size: 0.65rem; font-weight: 900; padding: 3px 8px;
+  border-radius: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.cup-badge.soon { background: #FFF3CD; color: #856404; }
+.cup-badge.ready { background: var(--green-pale); color: var(--green-dk); }
+
+/* ══════════════════════════════════════
+   STUDY SCREEN
+══════════════════════════════════════ */
+#screen-study { background: var(--bg); }
+
+.study-top {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--card);
+  border-bottom: 2px solid var(--card-border);
+}
+.btn-close {
+  width: 34px; height: 34px; background: none; border: none;
+  color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: background 0.15s;
+}
+.btn-close:hover { background: var(--bg); }
+.xp-bar-wrap {
+  flex: 1; height: 14px; background: var(--bg);
+  border-radius: 7px; overflow: hidden;
+  border: 2px solid var(--card-border);
+}
+.xp-bar { height: 100%; background: linear-gradient(90deg, var(--gold-dk), var(--gold)); border-radius: 7px; transition: width 0.4s; }
+.hearts-display { display: flex; gap: 3px; font-size: 1.05rem; }
+
+/* Question area */
+.study-body {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 12px 16px 24px; gap: 14px;
+  max-width: 600px; width: 100%; margin: 0 auto;
+}
+.q-cat-label {
+  font-size: 0.68rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--blue); text-align: center;
+  background: rgba(28,176,246,0.1); border-radius: 20px;
+  padding: 4px 14px; display: inline-block; align-self: center;
+}
+
+/* Mascot + question row */
+.q-row { display: flex; gap: 10px; align-items: flex-start; }
+.q-mascot { width: 68px; flex-shrink: 0; }
+.q-bubble {
+  flex: 1; background: var(--card); border-radius: 14px 14px 14px 4px;
+  border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  padding: 14px 16px; font-size: 1.05rem; font-weight: 800;
+  line-height: 1.5; color: var(--text);
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 9px; }
+.opt-btn {
+  background: var(--card);
+  border: 2.5px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  cursor: pointer; text-align: left;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--text);
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.15s;
+  box-shadow: 0 3px 0 var(--card-border);
+}
+.opt-btn:hover:not(:disabled) {
+  border-color: var(--blue);
+  background: rgba(28,176,246,0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 rgba(28,176,246,0.25);
+}
+.opt-btn:active:not(:disabled) { transform: translateY(0); box-shadow: 0 1px 0 var(--card-border); }
+.opt-letter {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--bg);
+  border: 2px solid var(--card-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 900; flex-shrink: 0;
+  color: var(--text-muted);
+}
+.opt-btn.correct {
+  background: #ECFDF5; border-color: var(--green);
+  color: #1a4a00; box-shadow: 0 4px 0 var(--green-dk);
+  animation: bounceIn 0.3s;
+}
+.opt-btn.correct .opt-letter { background: var(--green); color: #fff; border-color: var(--green); }
+.opt-btn.wrong {
+  background: #FFF5F5; border-color: var(--red);
+  color: #5a0000; box-shadow: 0 4px 0 var(--red-dk);
+  animation: shake 0.4s;
+}
+.opt-btn.wrong .opt-letter { background: var(--red); color: #fff; border-color: var(--red); }
+.opt-btn:disabled { cursor: default; }
+.opt-btn.dim { opacity: 0.35; }
+
+/* Feedback bar */
+.feedback-bar {
+  display: none; border-radius: var(--radius);
+  padding: 16px 18px; border: 2px solid;
+}
+.feedback-bar.correct { background: #ECFDF5; border-color: var(--green); }
+.feedback-bar.wrong   { background: #FFF5F5; border-color: var(--red); }
+.feedback-bar .fb-title { font-size: 0.88rem; font-weight: 900; margin-bottom: 3px; }
+.feedback-bar.correct .fb-title { color: var(--green-dk); }
+.feedback-bar.wrong   .fb-title { color: var(--red-dk); }
+.feedback-bar .fb-answer { font-size: 0.83rem; color: var(--text-muted); font-weight: 700; }
+.feedback-bar .fb-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.btn-continue {
+  flex-shrink: 0;
+  padding: 12px 22px; border-radius: var(--radius-sm);
+  border: none; font-size: 0.9rem; font-weight: 900;
+  cursor: pointer; letter-spacing: 0.02em;
+  transition: all 0.15s;
+}
+.feedback-bar.correct .btn-continue { background: var(--green); color: #fff; box-shadow: 0 4px 0 var(--green-dk); }
+.feedback-bar.wrong   .btn-continue { background: var(--red);   color: #fff; box-shadow: 0 4px 0 var(--red-dk); }
+.btn-continue:hover  { transform: translateY(-1px); }
+.btn-continue:active { transform: translateY(2px); box-shadow: none; }
+
+/* Confidence row — lives INSIDE feedback bar, below the main row */
+.conf-row { display: none; gap: 7px; margin-top: 10px; }
+.conf-row.show { display: flex; }
+.conf-mini {
+  flex: 1; padding: 8px 6px; border-radius: 10px;
+  border: 2px solid; font-size: 0.75rem; font-weight: 800;
+  cursor: pointer; text-align: center; transition: all 0.15s;
+  background: rgba(255,255,255,0.6);
+}
+.conf-mini.sure   { border-color: var(--green);   color: var(--green-dk); }
+.conf-mini.mostly { border-color: var(--gold-dk); color: var(--gold-dk); }
+.conf-mini.nope   { border-color: var(--red);     color: var(--red-dk); }
+.conf-mini:hover  { opacity: 0.8; transform: translateY(-1px); }
+.conf-mini.selected { opacity: 1; color: #fff; }
+.conf-mini.selected.sure   { background: var(--green); }
+.conf-mini.selected.mostly { background: var(--gold-dk); }
+.conf-mini.selected.nope   { background: var(--red); }
+
+/* ══════════════════════════════════════
+   STATS SCREEN
+══════════════════════════════════════ */
+#screen-stats { background: var(--bg); padding-bottom: 80px; }
+.stats-header {
+  padding: 18px 18px 10px;
+  background: var(--card); border-bottom: 2px solid var(--card-border);
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.stats-header h2 { font-size: 1.15rem; font-weight: 900; flex: 1; color: var(--text); }
+.stats-body { padding: 12px 14px; flex: 1; overflow-y: auto; }
+
+/* XP card */
+.xp-card {
+  background: linear-gradient(135deg, var(--mx-green) 0%, #00a06e 100%);
+  border-radius: var(--radius); padding: 20px 20px;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 4px 16px rgba(0,104,71,0.25);
+}
+.xp-card .xp-num { font-size: 2.4rem; font-weight: 900; color: var(--gold); line-height: 1; }
+.xp-card .level-badge {
+  background: var(--gold); color: #000;
+  border-radius: 20px; padding: 4px 14px;
+  font-size: 0.78rem; font-weight: 900; margin-top: 6px; display: inline-block;
+}
+
+/* Stats rows */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin-bottom: 12px; }
+.stat-box {
+  background: var(--card); border-radius: var(--radius-sm);
+  padding: 14px 10px; text-align: center;
+  border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+}
+.stat-box .sb-num { font-size: 1.55rem; font-weight: 900; line-height: 1; }
+.stat-box .sb-lbl { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 4px; font-weight: 800; }
+.stat-box.s-green .sb-num { color: var(--green-dk); }
+.stat-box.s-gold  .sb-num { color: var(--gold-dk); }
+.stat-box.s-red   .sb-num { color: var(--red); }
+.stat-box.s-fire  .sb-num { color: #E8720C; }
+
+/* Confidence chart */
+.conf-chart-wrap {
+  background: var(--card); border-radius: var(--radius-sm);
+  padding: 16px 14px; margin-bottom: 12px;
+  border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+}
+.conf-chart-title { font-size: 0.7rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 14px; }
+.conf-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.conf-bar-label { width: 72px; font-size: 0.78rem; font-weight: 800; color: var(--text); }
+.conf-bar-track { flex: 1; height: 13px; background: var(--bg); border-radius: 7px; overflow: hidden; border: 1px solid var(--card-border); }
+.conf-bar-fill { height: 100%; border-radius: 7px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+.conf-bar-count { width: 30px; font-size: 0.8rem; font-weight: 800; text-align: right; color: var(--text-muted); }
+
+/* Category list */
+.cat-stat-list {
+  background: var(--card); border-radius: var(--radius-sm);
+  overflow: hidden; border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card); margin-bottom: 14px;
+}
+.cat-stat-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-bottom: 1px solid var(--card-border);
+}
+.cat-stat-row:last-child { border-bottom: none; }
+.csr-icon { font-size: 1.2rem; }
+.csr-info { flex: 1; min-width: 0; }
+.csr-name { font-size: 0.84rem; font-weight: 800; color: var(--text); }
+.csr-track { height: 6px; background: var(--bg); border-radius: 3px; margin-top: 5px; overflow: hidden; border: 1px solid var(--card-border); }
+.csr-fill { height: 100%; border-radius: 3px; }
+.csr-pct { font-size: 0.82rem; font-weight: 900; width: 38px; text-align: right; }
+
+/* ══════════════════════════════════════
+   RESULT SCREEN
+══════════════════════════════════════ */
+#screen-result {
+  background: var(--bg);
+  align-items: center; justify-content: center;
+  text-align: center; padding: 32px 24px;
+}
+.result-mascot { width: 150px; margin: 0 auto 14px; }
+.result-title { font-size: 1.75rem; font-weight: 900; margin-bottom: 6px; color: var(--text); }
+.result-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; font-weight: 700; }
+.xp-earned {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: #000;
+  border-radius: 30px; padding: 8px 22px;
+  font-size: 1.05rem; font-weight: 900; margin-bottom: 20px;
+  box-shadow: 0 4px 0 var(--gold-dk);
+}
+.result-stats-row { display: flex; gap: 10px; width: 100%; max-width: 340px; margin: 0 auto 24px; }
+.rs-box {
+  flex: 1; background: var(--card); border-radius: var(--radius-sm);
+  padding: 14px; border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+}
+.rs-box .n { font-size: 1.7rem; font-weight: 900; }
+.rs-box .l { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; }
+.btn-primary {
+  width: 100%; max-width: 340px;
+  background: var(--green); border: none;
+  color: #fff; padding: 16px; border-radius: var(--radius);
+  font-size: 1.05rem; font-weight: 900; cursor: pointer;
+  box-shadow: 0 5px 0 var(--green-dk); margin-bottom: 10px;
+  transition: all 0.15s; letter-spacing: 0.03em;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--green-dk); }
+.btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--green-dk); }
+.btn-secondary {
+  width: 100%; max-width: 340px;
+  background: var(--card); border: 2px solid var(--card-border);
+  color: var(--text-muted); padding: 14px; border-radius: var(--radius);
+  font-size: 0.95rem; font-weight: 800; cursor: pointer;
+  transition: all 0.15s; box-shadow: var(--shadow-card);
+}
+.btn-secondary:hover { border-color: var(--text-muted); color: var(--text); }
+.btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ══════════════════════════════════════
+   CAMINO (LEARNING PATH) SCREEN
+══════════════════════════════════════ */
+#screen-camino { background: var(--bg); flex-direction: column; padding-bottom: 70px; }
+
+.path-topbar {
+  background: var(--mx-green);
+  border-bottom: none;
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 2px 8px rgba(0,104,71,0.3);
+  flex-shrink: 0;
+}
+.path-topbar-title { font-size: 0.95rem; font-weight: 900; flex: 1; color: #fff; }
+.path-topbar .stat-pill {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.3);
+  color: #fff;
+}
+.path-topbar .stat-pill .val,
+.path-topbar .stat-pill span { color: #fff; }
+
+#path-scroll { flex: 1; overflow-y: auto; background: var(--bg); padding: 10px 0 32px; }
+#path-chapters { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+/* ── Chapter wide banner (original style, kept) ── */
+.ch-banner {
+  width: calc(100% - 28px); max-width: 480px;
+  background: var(--ch, #1CB0F6);
+  border-radius: 16px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px 0 6px;
+  box-shadow: 0 4px 0 var(--ch-dk, #0088CC);
+}
+.ch-b-icon { font-size: 1.8rem; flex-shrink: 0; }
+.ch-b-text { flex: 1; min-width: 0; }
+.ch-b-unit  { font-size: 0.6rem;  font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.75); }
+.ch-b-title { font-size: 0.95rem; font-weight: 900; color: #fff; line-height: 1.2; }
+.ch-b-desc  { font-size: 0.7rem;  color: rgba(255,255,255,0.8); font-weight: 700; margin-top: 2px; }
+.ch-b-prog  { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
+.ch-b-frac  { font-size: 0.7rem; font-weight: 900; color: rgba(255,255,255,0.9); }
+
+/* ── Chapter section pill (compact, replaces wide banner) ── */
+.ch-section-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px 10px 16px;
+  margin: 20px 0 4px;
+  background: var(--ch, #1CB0F6);
+  border-radius: 30px;
+  box-shadow: 0 3px 0 var(--ch-dk, #0088CC);
+  max-width: 280px; width: calc(100% - 40px);
+}
+.csp-icon { font-size: 1.2rem; flex-shrink: 0; }
+.csp-text { flex: 1; min-width: 0; }
+.csp-unit { font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.8); }
+.csp-title { font-size: 0.82rem; font-weight: 900; color: #fff; line-height: 1.1; }
+.csp-prog { font-size: 0.65rem; font-weight: 900; color: rgba(255,255,255,0.9); white-space: nowrap; }
+
+/* ── Track ── */
+.ch-track {
+  width: 300px; max-width: calc(100% - 20px);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 4px 0;
+  position: relative;
+}
+
+/* SVG connector between nodes */
+.node-connector {
+  width: 300px; max-width: calc(100% - 20px);
+  flex-shrink: 0; display: block; height: 44px;
+}
+.node-connector svg { width: 100%; height: 100%; }
+
+/* ── Node slot ── */
+.node-slot {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  transform: translateX(var(--off, 0));
+}
+.node-with-label { position: relative; display: flex; align-items: center; }
+
+/* ── "JUGAR" speech bubble ── */
+.jugar-bubble {
+  background: #fff;
+  border: 2.5px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 5px 18px;
+  font-size: 0.82rem; font-weight: 900;
+  margin-bottom: 6px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  letter-spacing: 0.05em;
+  animation: bubblePop 0.4s cubic-bezier(.4,0,.2,1);
+}
+.jugar-bubble::after {
+  content: '';
+  position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #E5E7EB;
+}
+.jugar-bubble::before {
+  content: '';
+  position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: #fff;
+  z-index: 1;
+}
+@keyframes bubblePop {
+  0%   { transform: scale(0.8); opacity: 0; }
+  70%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Node button ── */
+.pnode {
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.9rem; line-height: 1;
+  cursor: pointer; transition: all 0.14s;
+  outline: none; position: relative;
+}
+.pnode:hover:not(:disabled) { transform: scale(1.07); }
+.pnode:active:not(:disabled) { transform: scale(0.95) translateY(3px); }
+
+/* Completed — solid gold coin */
+.pnode.done {
+  background: linear-gradient(160deg, #FFD84D 0%, #FFAE00 100%);
+  box-shadow: 0 6px 0 #C87800;
+  color: #fff; font-size: 2rem;
+}
+/* Available — glowing, colored */
+.pnode.available {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--ch,#1CB0F6) 85%, #fff), var(--ch,#1CB0F6));
+  box-shadow: 0 6px 0 var(--ch-dk,#0088CC);
+  color: #fff;
+  animation: nodeGlow 2s ease-in-out infinite;
+}
+@keyframes nodeGlow {
+  0%,100% { box-shadow: 0 6px 0 var(--ch-dk,#0088CC); }
+  50%      { box-shadow: 0 6px 0 var(--ch-dk,#0088CC), 0 0 0 8px rgba(28,176,246,0.2); }
+}
+/* Locked */
+.pnode.locked {
+  background: #E5E7EB;
+  box-shadow: 0 6px 0 #C0C4CC;
+  color: #9CA3AF; cursor: default; font-size: 1.5rem;
+}
+.pnode:disabled { cursor: default; }
+
+/* Stars */
+.pnode-stars { display: flex; gap: 3px; margin-top: 6px; }
+.ns { font-size: 1rem; color: #E5E7EB; line-height: 1; }
+.ns.lit { color: #FFAE00; }
+
+/* Side label — floats left or right of the node */
+.node-side-label {
+  position: absolute;
+  top: 50%; transform: translateY(calc(-50% + 38px));
+  white-space: nowrap;
+  font-size: 0.68rem; font-weight: 800;
+  color: var(--text-muted);
+  max-width: 96px; white-space: normal; line-height: 1.2; text-align: center;
+}
+.node-side-label.left  { right: calc(100% + 10px); text-align: right; }
+.node-side-label.right { left:  calc(100% + 10px); text-align: left; }
+
+/* Small Fridita walking the path */
+.path-fridita {
+  width: 52px; margin-bottom: 2px;
+  animation: fridaWalk 0.5s ease-out;
+}
+@keyframes fridaWalk {
+  from { transform: translateY(-12px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Chapter chest */
+.ch-trophy {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; margin: 14px 0 4px;
+}
+.ch-trophy .trophy-icon { font-size: 2.2rem; }
+.ch-trophy .trophy-label {
+  font-size: 0.62rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--text-light);
+}
+.ch-trophy.earned .trophy-icon { animation: chestBounce 0.5s ease-out; }
+@keyframes chestBounce {
+  0%,100% { transform: scale(1); } 40% { transform: scale(1.2) rotate(-5deg); } 60% { transform: scale(1.1) rotate(3deg); }
+}
+
+/* ══════════════════════════════════════
+   NO HEARTS SCREEN
+══════════════════════════════════════ */
+#screen-nohearts {
+  background: var(--bg);
+  align-items: center; justify-content: center;
+  text-align: center; padding: 40px 28px;
+  gap: 0;
+}
+.nh-hearts-row {
+  display: flex; gap: 10px; justify-content: center;
+  margin-bottom: 20px;
+}
+.nh-heart {
+  font-size: 2.2rem;
+  animation: heartBreak 0.4s forwards;
+}
+.nh-heart:nth-child(1) { animation-delay: 0.0s; }
+.nh-heart:nth-child(2) { animation-delay: 0.1s; }
+.nh-heart:nth-child(3) { animation-delay: 0.2s; }
+.nh-heart:nth-child(4) { animation-delay: 0.3s; }
+.nh-heart:nth-child(5) { animation-delay: 0.4s; }
+@keyframes heartBreak {
+  0%   { transform: scale(1); filter: none; }
+  40%  { transform: scale(1.3); filter: grayscale(0); }
+  100% { transform: scale(0.9); filter: grayscale(1); opacity: 0.4; }
+}
+.nh-mascot { width: 130px; margin: 0 auto 16px; }
+.nh-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; color: var(--red); }
+.nh-msg { font-size: 0.92rem; color: var(--text-muted); font-weight: 700; margin-bottom: 28px; line-height: 1.5; max-width: 300px; }
+.nh-timer-wrap {
+  background: var(--card); border: 2px solid var(--card-border);
+  border-radius: var(--radius); padding: 18px 24px;
+  margin-bottom: 24px; width: 100%; max-width: 320px;
+  box-shadow: var(--shadow-card);
+}
+.nh-timer-label { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; }
+.nh-timer { font-size: 2rem; font-weight: 900; color: var(--red); font-variant-numeric: tabular-nums; }
+.nh-timer-sub { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+.nh-hearts-progress {
+  display: flex; gap: 8px; justify-content: center; margin-top: 12px;
+}
+.nh-hp { font-size: 1.3rem; }
+.btn-practice-free {
+  width: 100%; max-width: 320px;
+  background: var(--card); border: 2px solid var(--card-border);
+  color: var(--text); padding: 14px; border-radius: var(--radius);
+  font-size: 0.95rem; font-weight: 800; cursor: pointer;
+  box-shadow: var(--shadow-card); margin-bottom: 10px;
+  transition: all 0.15s;
+}
+.btn-practice-free:hover { border-color: var(--blue); color: var(--blue); }
+.btn-go-home {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  padding: 8px; text-decoration: underline;
+}
+
+/* ══════════════════════════════════════
+   UPDATE TOAST
+══════════════════════════════════════ */
+#update-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--mx-green); color: #fff;
+  border-radius: 14px; padding: 12px 18px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(0,104,71,0.4);
+  z-index: 9999; font-size: 0.82rem; font-weight: 800;
+  transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+  width: calc(100% - 32px); max-width: 420px; box-sizing: border-box;
+  justify-content: center;
+}
+#update-toast.show { transform: translateX(-50%) translateY(0); }
+#update-toast #update-msg { flex: 1 1 100%; text-align: center; min-width: 0; }
+#update-toast button {
+  background: rgba(255,255,255,0.25); border: none; border-radius: 8px;
+  color: #fff; padding: 5px 12px; font-size: 0.78rem; font-weight: 900;
+  cursor: pointer; white-space: nowrap;
+}
+#update-toast button:hover { background: rgba(255,255,255,0.4); }
+
+/* ══════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════ */
+#confetti-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes bounceIn {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes popIn {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  70% { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes fadeSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.pop-in { animation: popIn 0.4s forwards; }
+.fade-up { animation: fadeSlideUp 0.3s forwards; }
+
+/* Heart lost animation */
+.heart-break {
+  animation: shake 0.3s, popIn 0s 0.3s;
+}
+
+/* XP float */
+.xp-float {
+  position: fixed; font-size: 1.2rem; font-weight: 900;
+  color: var(--gold); pointer-events: none; z-index: 999;
+  animation: floatUp 1s forwards;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .q-bubble { font-size: 0.95rem; }
+  .opt-btn { font-size: 0.88rem; padding: 12px 14px; }
+  .q-mascot { width: 55px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Update toast -->
+<div id="update-toast">
+  <span id="update-msg">🇲🇽 ¡Nueva versión disponible!</span>
+  <button onclick="applyUpdate()">Actualizar</button>
+  <button onclick="dismissUpdate()" style="background:rgba(255,255,255,0.1)">✕</button>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ═══════════ HOME ═══════════ -->
+<div id="screen-home" class="screen active">
+  <div class="top-bar">
+    <span class="flag-emoji">🇲🇽</span>
+    <div>
+      <div class="sub" style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:900">Mexico-Lingo</div>
+      <h1 style="font-size:0.88rem;line-height:1.2">para Karina Бубочка 🥰</h1>
+    </div>
+    <div style="flex:1"></div>
+    <div class="stat-pills">
+      <div class="stat-pill streak" title="Racha de días seguidos estudiando">🔥 <span class="val" id="h-streak">0</span></div>
+      <div class="stat-pill" title="Puntos de experiencia (XP) ganados"><span style="color:var(--gold)">⚡</span> <span class="val" id="h-xp">0</span></div>
+      <div class="stat-pill hearts" title="Vidas restantes — pierdes una por respuesta incorrecta">❤️ <span class="val" id="h-hearts">5</span></div>
+    </div>
+  </div><!-- /.top-bar -->
+
+  <div class="mascot-area">
+    <div class="mascot-inner">
+    <div class="mascot-frida-wrap" onclick="wiggleMascot()">
+<svg id="mascot-home" viewBox="-2 -22 210 204" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ═══ ALEBRIJE — friendly dragon on the left ═══ -->
+  <!-- tail -->
+  <path d="M46,162 Q60,146 53,128 Q64,112 50,104" stroke="#FF6B9D" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- body -->
+  <ellipse cx="28" cy="147" rx="21" ry="27" fill="#FF6B9D"/>
+  <!-- body pattern dots -->
+  <circle cx="21" cy="138" r="4"   fill="#FFC800"/>
+  <circle cx="35" cy="151" r="3.5" fill="#1CB0F6"/>
+  <circle cx="19" cy="155" r="3"   fill="#58CC02"/>
+  <circle cx="37" cy="141" r="3"   fill="#CE82FF"/>
+  <!-- back spines -->
+  <polygon points="20,122 13,104 24,119" fill="#FFC800"/>
+  <polygon points="28,117 26,99 34,115"  fill="#FF9600"/>
+  <polygon points="36,120 38,102 43,118" fill="#CE82FF"/>
+  <!-- neck -->
+  <rect x="19" y="119" width="18" height="15" rx="7" fill="#FF6B9D"/>
+  <!-- head -->
+  <circle cx="28" cy="102" r="24" fill="#FF6B9D"/>
+  <!-- head markings -->
+  <circle cx="17" cy="96" r="5" fill="#FFC800" opacity="0.7"/>
+  <circle cx="37" cy="94" r="4" fill="#1CB0F6" opacity="0.7"/>
+  <!-- horns -->
+  <polygon points="14,85 7,68 19,81"  fill="#FFC800"/>
+  <polygon points="42,85 49,68 37,81" fill="#58CC02"/>
+  <!-- small wings behind body -->
+  <path d="M5,130 Q-5,113 7,105 Q9,121 17,128 Z" fill="#1CB0F6" opacity="0.85"/>
+  <path d="M51,130 Q61,113 49,105 Q47,121 39,128 Z" fill="#58CC02" opacity="0.85"/>
+  <!-- eyes (Duolingo: white oval + dark circle + shine) -->
+  <ellipse cx="20" cy="103" rx="9" ry="8.5" fill="#fff"/>
+  <ellipse cx="36" cy="103" rx="9" ry="8.5" fill="#fff"/>
+  <circle cx="22" cy="105" r="5.5" fill="#1a0600"/>
+  <circle cx="38" cy="105" r="5.5" fill="#1a0600"/>
+  <circle cx="25" cy="101" r="2.5" fill="#fff"/>
+  <circle cx="41" cy="101" r="2.5" fill="#fff"/>
+  <!-- nose -->
+  <circle cx="24" cy="113" r="2.5" fill="#CC4060" opacity="0.5"/>
+  <circle cx="32" cy="113" r="2.5" fill="#CC4060" opacity="0.5"/>
+  <!-- smile -->
+  <path d="M19,118 Q28,127 37,118" fill="#CE1126"/>
+  <path d="M19,118 Q28,123 37,118" fill="#FF6B7A"/>
+  <!-- stubby legs -->
+  <ellipse cx="18" cy="167" rx="7" ry="11" fill="#FF6B9D"/>
+  <ellipse cx="38" cy="167" rx="7" ry="11" fill="#FF6B9D"/>
+  <ellipse cx="18" cy="177" rx="9" ry="5" fill="#FF8DAD"/>
+  <ellipse cx="38" cy="177" rx="9" ry="5" fill="#FF8DAD"/>
+  <!-- shadow -->
+  <ellipse cx="28" cy="179" rx="22" ry="5" fill="#00000010"/>
+
+  <!-- ═══ FRIDA — centred, translated +55 ═══ -->
+  <g transform="translate(55, 0)">
+    <ellipse cx="50" cy="172" rx="40" ry="6" fill="#00000012"/>
+    <path d="M4,172 Q50,158 96,172 L94,137 Q50,150 6,137 Z" fill="#C62828"/>
+    <ellipse cx="50" cy="172" rx="44" ry="8" fill="#C62828"/>
+    <circle cx="14" cy="168" r="3"   fill="#FFC800"/>
+    <circle cx="26" cy="170" r="2.5" fill="#1CB0F6"/>
+    <circle cx="38" cy="171" r="3"   fill="#FFC800"/>
+    <circle cx="50" cy="171" r="2.5" fill="#58CC02"/>
+    <circle cx="62" cy="171" r="3"   fill="#FFC800"/>
+    <circle cx="74" cy="170" r="2.5" fill="#1CB0F6"/>
+    <circle cx="86" cy="168" r="3"   fill="#58CC02"/>
+    <path d="M8,137 Q50,125 92,137 L90,110 Q50,121 10,110 Z" fill="#1565C0"/>
+    <circle cx="20" cy="126" r="2.5" fill="#FFD600"/>
+    <circle cx="35" cy="129" r="2"   fill="#fff"/>
+    <circle cx="50" cy="130" r="2.5" fill="#FFD600"/>
+    <circle cx="65" cy="129" r="2"   fill="#fff"/>
+    <circle cx="80" cy="126" r="2.5" fill="#FFD600"/>
+    <rect x="24" y="88" width="52" height="28" rx="9" fill="#7B1FA2"/>
+    <ellipse cx="50" cy="89" rx="17" ry="6" fill="#F4B942"/>
+    <circle cx="34" cy="88" r="4" fill="#E63946"/>
+    <circle cx="50" cy="88" r="4" fill="#1CB0F6"/>
+    <circle cx="66" cy="88" r="4" fill="#58CC02"/>
+    <circle cx="34" cy="105" r="4"   fill="#FF6B9D" opacity="0.8"/>
+    <circle cx="50" cy="108" r="3.5" fill="#FFD600"  opacity="0.8"/>
+    <circle cx="66" cy="105" r="4"   fill="#1CB0F6"  opacity="0.8"/>
+    <ellipse cx="17" cy="102" rx="8" ry="18" fill="#C27A4E" transform="rotate(14 17 102)"/>
+    <ellipse cx="83" cy="102" rx="8" ry="18" fill="#C27A4E" transform="rotate(-14 83 102)"/>
+    <circle cx="10" cy="117" r="7" fill="#C27A4E"/>
+    <circle cx="90" cy="117" r="7" fill="#C27A4E"/>
+    <rect x="41" y="69" width="18" height="23" rx="7" fill="#C27A4E"/>
+    <ellipse cx="50" cy="88" rx="10" ry="3" fill="none" stroke="#F4B942" stroke-width="1.8"/>
+    <circle cx="50" cy="91" r="2.8" fill="#CE1126"/>
+    <circle cx="50" cy="44" r="42" fill="#C27A4E"/>
+    <ellipse cx="11" cy="44" rx="11" ry="34" fill="#1a0600"/>
+    <ellipse cx="89" cy="44" rx="11" ry="34" fill="#1a0600"/>
+    <ellipse cx="50" cy="13" rx="42" ry="24" fill="#1a0600"/>
+    <ellipse cx="50" cy="2"  rx="28" ry="15" fill="#2a1000"/>
+    <path d="M28,8 Q38,-2 50,5 Q62,-2 72,8" fill="none" stroke="#3d1400" stroke-width="2.5" stroke-linecap="round"/>
+    <g transform="translate(18,8)">
+      <circle r="5" fill="#FF6B9D"/>
+      <circle cy="-7" r="5" fill="#FF8DAD"/><circle cx="6" cy="-4" r="5" fill="#FF8DAD"/>
+      <circle cx="6" cy="4" r="5" fill="#FF8DAD"/><circle cy="7" r="5" fill="#FF8DAD"/>
+      <circle cx="-6" cy="4" r="5" fill="#FF8DAD"/><circle cx="-6" cy="-4" r="5" fill="#FF8DAD"/>
+      <circle r="6" fill="#E63946"/><circle r="2.5" fill="#FFC800"/>
+    </g>
+    <g transform="translate(50,-2)">
+      <circle cy="-7" r="6" fill="#FFE082"/><circle cx="7" cy="-4" r="6" fill="#FFE082"/>
+      <circle cx="7" cy="4" r="6" fill="#FFE082"/><circle cy="7" r="6" fill="#FFE082"/>
+      <circle cx="-7" cy="4" r="6" fill="#FFE082"/><circle cx="-7" cy="-4" r="6" fill="#FFE082"/>
+      <circle r="8" fill="#FFC800"/><circle r="3.5" fill="#E63946"/>
+    </g>
+    <g transform="translate(82,8)">
+      <circle r="5" fill="#7EEAEA"/>
+      <circle cy="-7" r="5" fill="#B2F5EA"/><circle cx="6" cy="-4" r="5" fill="#B2F5EA"/>
+      <circle cx="6" cy="4" r="5" fill="#B2F5EA"/><circle cy="7" r="5" fill="#B2F5EA"/>
+      <circle cx="-6" cy="4" r="5" fill="#B2F5EA"/><circle cx="-6" cy="-4" r="5" fill="#B2F5EA"/>
+      <circle r="6" fill="#1CB0F6"/><circle r="2.5" fill="#fff"/>
+    </g>
+    <path d="M22,38 Q36,27 50,30 Q64,27 78,38" stroke="#1a0600" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <ellipse cx="34" cy="48" rx="13" ry="12" fill="#fff"/>
+    <ellipse cx="66" cy="48" rx="13" ry="12" fill="#fff"/>
+    <circle cx="36" cy="51" r="8.5" fill="#1a0600"/>
+    <circle cx="68" cy="51" r="8.5" fill="#1a0600"/>
+    <circle cx="40" cy="45" r="3.5" fill="#fff"/>
+    <circle cx="72" cy="45" r="3.5" fill="#fff"/>
+    <circle cx="44" cy="62" r="3" fill="#A06040" opacity="0.5"/>
+    <circle cx="56" cy="62" r="3" fill="#A06040" opacity="0.5"/>
+    <g id="mouth-happy">
+      <path d="M30,74 Q50,88 70,74" fill="#CE1126"/>
+      <path d="M30,74 Q50,83 70,74" fill="#FF6B7A"/>
+      <ellipse cx="50" cy="79" rx="11" ry="4" fill="#fff" opacity="0.25"/>
+    </g>
+    <g id="mouth-wrong" style="display:none">
+      <path d="M30,82 Q50,71 70,82" fill="#CE1126"/>
+      <path d="M30,82 Q50,76 70,82" fill="#FF6B7A"/>
+    </g>
+    <g id="mouth-celebrate" style="display:none">
+      <path d="M24,72 Q50,92 76,72" fill="#CE1126"/>
+      <path d="M24,72 Q50,86 76,72" fill="#FF6B7A"/>
+      <ellipse cx="50" cy="80" rx="14" ry="7" fill="#fff" opacity="0.3"/>
+    </g>
+    <circle cx="11" cy="60" r="10" fill="#E85040" opacity="0.18"/>
+    <circle cx="89" cy="60" r="10" fill="#E85040" opacity="0.18"/>
+    <circle cx="5"  cy="46" r="4.5" fill="#F4B942" stroke="#D4A700" stroke-width="1.5"/>
+    <circle cx="5"  cy="57" r="3.5" fill="#CE1126"/>
+    <circle cx="5"  cy="65" r="2.5" fill="#F4B942"/>
+    <circle cx="95" cy="46" r="4.5" fill="#F4B942" stroke="#D4A700" stroke-width="1.5"/>
+    <circle cx="95" cy="57" r="3.5" fill="#CE1126"/>
+    <circle cx="95" cy="65" r="2.5" fill="#F4B942"/>
+  </g>
+
+  <!-- ═══ PIÑATA — hanging on the right ═══ -->
+  <g transform="translate(161, 8)">
+    <!-- string -->
+    <line x1="24" y1="-20" x2="24" y2="4" stroke="#8B5A2B" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 7 tissue-paper arms around centre (24,46) -->
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#E63946"  transform="rotate(0   24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#FF9600"  transform="rotate(51  24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#FFC800"  transform="rotate(102 24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#58CC02"  transform="rotate(153 24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#1CB0F6"  transform="rotate(204 24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#CE82FF"  transform="rotate(255 24 46)"/>
+    <ellipse cx="24" cy="24" rx="7" ry="18" fill="#FF6B9D"  transform="rotate(306 24 46)"/>
+    <!-- centre body -->
+    <circle cx="24" cy="46" r="20" fill="#FFD600"/>
+    <!-- face -->
+    <ellipse cx="18" cy="43" rx="5.5" ry="5" fill="#fff"/>
+    <ellipse cx="30" cy="43" rx="5.5" ry="5" fill="#fff"/>
+    <circle cx="19" cy="45" r="3.2" fill="#1a0600"/>
+    <circle cx="31" cy="45" r="3.2" fill="#1a0600"/>
+    <circle cx="21" cy="42" r="1.8" fill="#fff"/>
+    <circle cx="33" cy="42" r="1.8" fill="#fff"/>
+    <path d="M17,52 Q24,60 31,52" fill="#CE1126"/>
+    <path d="M17,52 Q24,56 31,52" fill="#FF6B7A"/>
+    <!-- cheeks -->
+    <circle cx="11" cy="49" r="5" fill="#FF6B9D" opacity="0.3"/>
+    <circle cx="37" cy="49" r="5" fill="#FF6B9D" opacity="0.3"/>
+  </g>
+
+</svg>
+
+    <div class="mascot-bubble" id="home-bubble">¡Hola Karina! Soy Fridita 🌸 ¡Vamos a conquistar tu naturalización!</div>
+  </div>
+  </div><!-- /.mascot-area -->
+
+
+
+  <div class="home-content">
+    <div class="section-title">Modos de estudio</div>
+    <div class="mode-grid">
+      <button class="mode-card full c-green" onclick="startStudy('all')">
+        <div class="mc-icon">🃏</div>
+        <div class="mc-body"><div class="mc-title">Todas las preguntas</div><div class="mc-count" id="mc-all">— en el banco</div></div>
+      </button>
+      <button class="mode-card c-red" onclick="startStudy('nope')">
+        <div class="mc-icon">😅</div>
+        <div class="mc-body"><div class="mc-title">No lo sabía</div><div class="mc-count" id="mc-nope">0 tarjetas</div></div>
+      </button>
+      <button class="mode-card c-gold" onclick="startStudy('mostly')">
+        <div class="mc-icon">🤔</div>
+        <div class="mc-body"><div class="mc-title">Casi seguro</div><div class="mc-count" id="mc-mostly">0 tarjetas</div></div>
+      </button>
+      <button class="mode-card c-purple" onclick="startStudy('wrong')">
+        <div class="mc-icon">🔄</div>
+        <div class="mc-body"><div class="mc-title">Respondidas mal</div><div class="mc-count" id="mc-wrong">0 tarjetas</div></div>
+      </button>
+      <button class="mode-card c-blue" onclick="startStudy('unseen')">
+        <div class="mc-icon">🆕</div>
+        <div class="mc-body"><div class="mc-title">Sin ver</div><div class="mc-count" id="mc-unseen">0 tarjetas</div></div>
+      </button>
+      <button class="mode-card" onclick="startStudy('exam')" style="border-left:4px solid #FF9600">
+        <div class="mc-icon">📝</div>
+        <div class="mc-body"><div class="mc-title">Simular examen</div><div class="mc-count">10 preguntas</div></div>
+      </button>
+    </div>
+
+    <div class="section-title">Por categoría</div>
+    <div class="cat-path" id="cat-path"></div>
+
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="resetProgress()" style="background:var(--card);border:2px solid var(--card-border);color:var(--text-muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:700;box-shadow:var(--shadow-card);">
+        🗑️ Reiniciar progreso
+      </button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" id="main-nav">
+    <button class="nav-btn" data-screen="camino" onclick="showScreen('camino')">
+      <span class="nb-icon">🗺️</span>Camino
+    </button>
+    <button class="nav-btn active" data-screen="home" onclick="showScreen('home')">
+      <span class="nb-icon">🏠</span>Inicio
+    </button>
+    <button class="nav-btn" data-screen="stats" onclick="showScreen('stats')">
+      <span class="nb-icon">📊</span>Estadísticas
+    </button>
+  </nav>
+</div>
+</div><!-- /#screen-home -->
+
+<!-- ═══════════ STUDY ═══════════ -->
+<div id="screen-study" class="screen">
+  <div class="study-top">
+    <button class="btn-close" onclick="confirmExit()">✕</button>
+    <div class="xp-bar-wrap"><div class="xp-bar" id="study-xp-bar" style="width:0%"></div></div>
+    <div class="hearts-display" id="study-hearts"></div>
+  </div>
+
+  <div class="study-body">
+    <div class="q-cat-label" id="q-cat-label"></div>
+
+    <div class="q-row">
+      <div class="q-mascot">
+        <svg id="mascot-study" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" style="width:70px;height:auto">
+        </svg>
+      </div>
+      <div class="q-bubble" id="q-text"></div>
+    </div>
+
+    <div class="options" id="options-wrap"></div>
+
+    <div class="feedback-bar" id="feedback-bar">
+      <div class="fb-row">
+        <div>
+          <div class="fb-title" id="fb-title"></div>
+          <div class="fb-answer" id="fb-answer"></div>
+        </div>
+        <button class="btn-continue" id="btn-continue" onclick="autoConfAndNext()">CONTINUAR</button>
+      </div>
+      <div class="conf-row" id="conf-row">
+        <button class="conf-mini sure"   onclick="setConfAndNext(2)">💪 Lo sabía</button>
+        <button class="conf-mini mostly" onclick="setConfAndNext(1)">🤔 Casi</button>
+        <button class="conf-mini nope"   onclick="setConfAndNext(0)">😅 No sabía</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STATS ═══════════ -->
+<div id="screen-stats" class="screen">
+  <div class="stats-header">
+    <span style="font-size:1.6rem">📊</span>
+    <h2>Mis estadísticas</h2>
+  </div>
+
+  <div class="stats-body">
+    <div class="xp-card">
+      <div style="flex:1">
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em">Experiencia total</div>
+        <div class="xp-num" id="s-xp">0</div>
+        <div class="level-badge" id="s-level">Nivel 1</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:2rem">🔥</div>
+        <div style="font-size:1.4rem;font-weight:900;color:#FF9600" id="s-streak">0</div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.6)">Racha</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box s-green">
+        <div class="sb-num" id="s-total">0</div>
+        <div class="sb-lbl">Vistas</div>
+      </div>
+      <div class="stat-box s-gold">
+        <div class="sb-num" id="s-acc">0%</div>
+        <div class="sb-lbl">Precisión</div>
+      </div>
+      <div class="stat-box s-fire">
+        <div class="sb-num" id="s-best">0</div>
+        <div class="sb-lbl">Mejor racha</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box s-green">
+        <div class="sb-num" id="s-sure">0</div>
+        <div class="sb-lbl">✅ Seguro</div>
+      </div>
+      <div class="stat-box s-gold">
+        <div class="sb-num" id="s-mostly">0</div>
+        <div class="sb-lbl">🤔 Casi</div>
+      </div>
+      <div class="stat-box s-red">
+        <div class="sb-num" id="s-nope">0</div>
+        <div class="sb-lbl">😅 Difícil</div>
+      </div>
+    </div>
+
+    <div class="conf-chart-wrap">
+      <div class="conf-chart-title">Dominio de confianza</div>
+      <div class="conf-bar-row">
+        <div class="conf-bar-label" style="color:var(--green)">✅ Seguro</div>
+        <div class="conf-bar-track"><div class="conf-bar-fill" id="cb-sure" style="background:var(--green);width:0%"></div></div>
+        <div class="conf-bar-count" id="cn-sure">0</div>
+      </div>
+      <div class="conf-bar-row">
+        <div class="conf-bar-label" style="color:var(--gold)">🤔 Casi</div>
+        <div class="conf-bar-track"><div class="conf-bar-fill" id="cb-mostly" style="background:var(--gold);width:0%"></div></div>
+        <div class="conf-bar-count" id="cn-mostly">0</div>
+      </div>
+      <div class="conf-bar-row">
+        <div class="conf-bar-label" style="color:var(--red)">😅 Difícil</div>
+        <div class="conf-bar-track"><div class="conf-bar-fill" id="cb-nope" style="background:var(--red);width:0%"></div></div>
+        <div class="conf-bar-count" id="cn-nope">0</div>
+      </div>
+      <div class="conf-bar-row">
+        <div class="conf-bar-label" style="color:var(--text-muted)">⬜ Sin ver</div>
+        <div class="conf-bar-track"><div class="conf-bar-fill" id="cb-unseen" style="background:var(--text-muted);width:0%"></div></div>
+        <div class="conf-bar-count" id="cn-unseen">0</div>
+      </div>
+    </div>
+
+    <div class="section-title" style="padding:4px 0 8px">Por categoría</div>
+    <div class="cat-stat-list" id="cat-stat-list"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="showScreen('home')">
+      <span class="nb-icon">🏠</span>Inicio
+    </button>
+    <button class="nav-btn active" onclick="showScreen('stats')">
+      <span class="nb-icon">📊</span>Estadísticas
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════ RESULT ═══════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-mascot">
+    <svg id="mascot-result" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" style="width:150px;height:auto">
+    </svg>
+  </div>
+  <div class="result-title" id="res-title">¡Increíble!</div>
+  <div class="result-sub" id="res-sub"></div>
+  <div class="xp-earned">⚡ +<span id="res-xp">0</span> XP ganados</div>
+  <div class="result-stats-row">
+    <div class="rs-box">
+      <div class="n" style="color:var(--green)" id="res-correct">0</div>
+      <div class="l">Correctas</div>
+    </div>
+    <div class="rs-box">
+      <div class="n" style="color:var(--red)" id="res-wrong">0</div>
+      <div class="l">Incorrectas</div>
+    </div>
+    <div class="rs-box">
+      <div class="n" style="color:var(--gold)" id="res-pct">0%</div>
+      <div class="l">Aciertos</div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="restartStudy()">🔄 Repetir ronda</button>
+  <button class="btn-secondary" onclick="showScreen('home')">🏠 Volver al inicio</button>
+</div>
+
+<!-- ═══════════ CAMINO SCREEN ═══════════ -->
+<div id="screen-camino" class="screen">
+  <div class="path-topbar">
+    <span style="font-size:1.4rem">🇲🇽</span>
+    <div class="path-topbar-title">Camino a México</div>
+    <div class="path-topbar-pills">
+      <div class="stat-pill streak" title="Racha de días seguidos estudiando">🔥 <span id="path-streak">0</span></div>
+      <div class="stat-pill" title="Puntos de experiencia (XP) ganados">⚡ <span id="path-xp">0</span></div>
+      <div class="stat-pill hearts" title="Vidas restantes — pierdes una por respuesta incorrecta">❤️ <span id="path-hearts">5</span></div>
+    </div>
+  </div>
+
+  <div id="path-scroll">
+    <div id="path-chapters"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-screen="camino" onclick="showScreen('camino')">
+      <span class="nb-icon">🗺️</span>Camino
+    </button>
+    <button class="nav-btn" data-screen="home" onclick="showScreen('home')">
+      <span class="nb-icon">🏠</span>Inicio
+    </button>
+    <button class="nav-btn" data-screen="stats" onclick="showScreen('stats')">
+      <span class="nb-icon">📊</span>Estadísticas
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════ NO HEARTS SCREEN ═══════════ -->
+<div id="screen-nohearts" class="screen">
+  <div class="nh-hearts-row">
+    <span class="nh-heart">🖤</span>
+    <span class="nh-heart">🖤</span>
+    <span class="nh-heart">🖤</span>
+    <span class="nh-heart">🖤</span>
+    <span class="nh-heart">🖤</span>
+  </div>
+  <div class="nh-mascot">
+    <svg id="mascot-nohearts" viewBox="0 0 160 190" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:auto"></svg>
+  </div>
+  <div class="nh-title">¡Sin corazones! 💔</div>
+  <div class="nh-msg">Karina, necesitas descansar un poco. Los corazones se recuperan solos con el tiempo. ¡Vuelve pronto!</div>
+
+  <div class="nh-timer-wrap">
+    <div class="nh-timer-label">❤️ próximo corazón en</div>
+    <div class="nh-timer" id="nh-countdown">30:00</div>
+    <div class="nh-timer-sub">Los corazones se recuperan cada 30 minutos</div>
+    <div class="nh-hearts-progress" id="nh-hearts-progress"></div>
+  </div>
+
+  <button class="btn-practice-free" onclick="startFreeMode()">
+    🃏 Practicar sin corazones
+  </button>
+  <button class="btn-go-home" onclick="showScreen('home')">Volver al inicio</button>
+</div>
+
+<script src="questions.js"></script>
+<script src="path.js"></script>
+<script src="app.js"></script>
+
+<script>
+// ── Service Worker + Auto-update ──────────────────────
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+
+  let swRegistration = null;
+  let pendingUpdate  = false;
+
+  // Register SW
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    swRegistration = reg;
+
+    // If a new SW is waiting already, flag it
+    if (reg.waiting) showUpdateToast('Nueva versión lista');
+
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateToast('Nueva versión disponible');
+        }
+      });
+    });
+  }).catch(() => {});
+
+  // Ask SW to check version.json on startup (after 2s)
+  navigator.serviceWorker.ready.then(reg => {
+    setTimeout(() => {
+      if (reg.active) reg.active.postMessage({ type: 'CHECK_VERSION' });
+    }, 2000);
+  });
+
+  // Listen for messages from SW
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'UPDATE_AVAILABLE') {
+      const notes = e.data.notes ? ` (${e.data.notes})` : '';
+      showUpdateToast(`v${e.data.version} disponible${notes}`);
+    }
+  });
+
+  // Reload when SW takes control after update
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) { refreshing = true; location.reload(); }
+  });
+
+  window.applyUpdate = function() {
+    if (swRegistration?.waiting) {
+      swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    } else {
+      location.reload(true);
+    }
+    dismissUpdate();
+  };
+
+  function showUpdateToast(msg) {
+    const toast = document.getElementById('update-toast');
+    const msgEl = document.getElementById('update-msg');
+    if (toast && msgEl) {
+      msgEl.textContent = '🇲🇽 ' + msg;
+      toast.classList.add('show');
+      // Auto-dismiss after 12s
+      setTimeout(dismissUpdate, 12000);
+    }
+  }
+
+  window.dismissUpdate = function() {
+    document.getElementById('update-toast')?.classList.remove('show');
+  };
+})();
+</script>
+</body>
+</html>
