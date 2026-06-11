@@ -740,18 +740,21 @@ body {
    UPDATE TOAST
 ══════════════════════════════════════ */
 #update-toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
-  pointer-events: none;
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s ease, visibility 0s linear 0.4s;
   background: var(--mx-green); color: #fff;
   border-radius: 14px; padding: 12px 18px;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   box-shadow: 0 4px 20px rgba(0,104,71,0.4);
   z-index: 9999; font-size: 0.82rem; font-weight: 800;
-  transition: transform 0.4s cubic-bezier(.4,0,.2,1);
   width: calc(100% - 32px); max-width: 420px; box-sizing: border-box;
   justify-content: center;
 }
-#update-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
+#update-toast.show {
+  transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible;
+  pointer-events: auto; transition: transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s ease;
+}
 #update-toast #update-msg { flex: 1 1 100%; text-align: center; min-width: 0; }
 #update-toast button {
   background: rgba(255,255,255,0.25); border: none; border-radius: 8px;
