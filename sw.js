@@ -8,12 +8,12 @@ const CACHE_NAME   = 'mexicolingo-v1.3.0';
 const APP_VERSION  = '1.3.0';
 
 const ASSETS = [
-  '/index.html',
-  '/questions.js',
-  '/path.js',
-  '/app.js',
-  '/manifest.json',
-  '/version.json',
+  './index.html',
+  './questions.js',
+  './path.js',
+  './app.js',
+  './manifest.json',
+  './version.json',
 ];
 
 // ── Skip caching on localhost (dev mode) ──
@@ -78,7 +78,7 @@ self.addEventListener('message', event => {
 async function checkForUpdate(client) {
   try {
     // Fetch version.json fresh from server (bypass cache)
-    const res = await fetch('/version.json?t=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) return;
     const data = await res.json();
     const serverVersion = data.version;

@@ -2,7 +2,7 @@
   "name": "Mexico-Lingo — Naturalización Mexicana",
   "short_name": "Mexico-Lingo",
   "description": "Estudia para tu examen de naturalización mexicana con Fridita 🌸",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FFFFFF",
